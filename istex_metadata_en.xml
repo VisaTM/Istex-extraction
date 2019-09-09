@@ -1,0 +1,114 @@
+<tool id="istex-metadata" name="Generating a metadata file" version="0.5.2">
+  <description>from an ISTEX id file</description>
+  <requirements>
+    <container type="docker">visatm/istex-metadata</container>
+  </requirements>
+  <command><![CDATA[
+    IstexMetadata.pl -i "$input" -m $metadata -l "$language"
+    #if $teeft == 'yes'
+    -t "$docterm"
+    #end if
+  ]]></command>
+  <inputs>
+    <param name="input" type="data" format="txt" label="ISTEX id file" />
+    <param name="teeft" type="select" display="radio" label="Extract TEEFT descriptors?">
+      <option value="no" selected="true">No</option>
+      <option value="yes">Yes</option>
+    </param>
+    <param name="language" type="select" display="radio" label="Metadata file language">
+      <option value="en" selected="true">English</option>
+      <option value="fr">French</option>
+    </param>
+  </inputs>
+  <outputs>
+    <data format="tabular" label="Metadata on ${on_string}" name="metadata" />
+    <data format="tabular" label="TEEFT doc × term on ${on_string}" name="docterm">
+      <filter>teeft == 'yes'</filter>
+    </data>
+  </outputs>
+
+  <tests>
+    <test>
+      <param name="input" value="istexCorpus.txt" />
+      <param name="teeft" value="no" />
+      <output name="metadata" file="istexMetadata.txt" />
+    </test>
+  </tests>
+
+  <help><![CDATA[
+From a list of ISTEX id in the input file, this tool extracts the corresponding metadata 
+and produces a tab-separated file. The first line of that file is a header with the different 
+fields name. 
+
+It is also possible to extract the TEEFT keywords associated with the documents to produce 
+a “doc × term” file. 
+
+-----
+
+**Options**
+
+The programme has several arguments, one **mandatory**, the others *optional*.
+
++ *“ISTEX id”* **inputfile name** 
+
++ *TEEFT “doc × term” filename*, if you wish to extract these keywords
+
++ *Metadata file language*, used for the list of fields and the languages of publication
+
+**Input datafile**
+
+The input file must contains a line with the mention **ISTEX** between square brackets 
+followed by a list of id, one per line preceded by the type of id. Any information present 
+before these lines will be ignored. Each id can be followed by a hash sign ('#') and a file 
+name. 
+
+Example:
+
+::
+
+     [ISTEX]
+     ark ark:/67375/0T8-VC3W50FL-B             # test001
+     ark ark:/67375/6H6-ZNZ982C4-N             # test002
+     ark ark:/67375/6H6-4NH81FDN-R             # test003
+     ark ark:/67375/6H6-1FSRLFB6-Q             # test004
+     ark ark:/67375/WNG-RHR3302C-7             # test005
+     ark ark:/67375/WNG-R0P0D6BZ-L             # test006
+
+
+-----
+ 
+**Metadata**
+
+The metadata file is composed of tab-separated columns. The first line is reserved to the header 
+containing the different field names:
+
+ + Filename
+ + Title
+ + Author
+ + Affiliation
+ + Source
+ + ISSN
+ + e-ISSN
+ + ISBN
+ + e-ISBN
+ + Publisher
+ + Document type
+ + Content type
+ + Date
+ + Language
+ + Abstract
+ + Author’s keywords
+ + WoS category
+ + Science-Metrix category
+ + Scopus category
+ + INIST category
+ + Quality score
+ + PDF version
+ + ISTEX Id
+ + ARK
+ + DOI
+ + PMID
+
+  ]]></help>
+
+</tool>

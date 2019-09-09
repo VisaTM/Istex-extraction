@@ -1,0 +1,86 @@
+<tool id="istex-teeft" name="Génération d’un fichier de descripteurs TEEFT" version="0.5.1">
+  <description>à partir d’un fichier d’identifiants ISTEX</description>
+  <requirements>
+    <container type="docker">visatm/istex-metadata</container>
+  </requirements>
+  <command><![CDATA[
+    IstexMetadata.pl -i "$input" -t "$docterm"
+  ]]></command>
+  <inputs>
+    <param name="input" type="data" format="txt" label="Fichier d’identifiants ISTEX" />
+  </inputs>
+  <outputs>
+    <data format="tabular" label="“doc × terme” TEEFT de ${on_string}" name="docterm" />
+  </outputs>
+
+  <tests>
+    <test>
+      <param name="input" value="istexCorpus.txt" />
+      <output name="metadata" file="istexTeeft.txt" />
+    </test>
+  </tests>
+
+  <help><![CDATA[
+À partir de la liste d’identifiants ISTEX du fichier d’entrée, cet outil va extraire les descripteurs *TEEFT* 
+correspondantes et produire un fichier *“doc × terme”*. 
+
+-----
+
+**Options**
+
+Le programme est appelé avec juste un argument **obligatoire**
+
++ **Nom du fichier d’identifiants ISTEX** 
+
+-----
+
+**Fichier d’entrée**
+
+Le fichier d’entrée **doit** contenir une ligne avec la mention **ISTEX** entre crochets, 
+suivie par une liste d’identifiants, un par ligne, précédé du type de l’identifiant. 
+Toute information présente avant l’indication **[ISTEX]** sera ignorée. Chaque identifiant 
+peut être suivi d’un symbole dièse ('#') et d’un nom de fichier. 
+
+Exemple :
+
+::
+
+     [ISTEX]
+     ark ark:/67375/0T8-VC3W50FL-B             # test001
+     ark ark:/67375/6H6-ZNZ982C4-N             # test002
+     ark ark:/67375/6H6-4NH81FDN-R             # test003
+     ark ark:/67375/6H6-1FSRLFB6-Q             # test004
+     ark ark:/67375/WNG-RHR3302C-7             # test005
+     ark ark:/67375/WNG-R0P0D6BZ-L             # test006
+
+
+-----
+
+**Fichier “doc × terme”**
+
+Le fichier de type “doc × terme” comprend une liste de couples « nom de fichier — descripteur » 
+avec un couple par ligne. Si le fichier d’identifiants ISTEX ne contient pas de nom de fichier, alors 
+le programme générera un nom de la forme « f_nnn_ », où *nnn* correspond à un nombre séquentiel. 
+
+Exemple :
+
+::
+
+     test002      absolute value
+     test002      behaviour
+     test002      birkhoff theorem
+     test002      boundary conditions
+     test002      cubic interaction
+     test002      curvature
+     test002      different energies
+     test002      disordered regions
+     test002      geometrical structure
+     test002      harmonic behaviour
+     test002      harmonicity threshold
+     test002      high energy
+
+
+
+ ]]></help>
+
+</tool>

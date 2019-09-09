@@ -1,0 +1,87 @@
+<tool id="istex-teeft" name="Generation of a TEEFT “doc × term” file" version="0.5.1">
+  <description>from an ISTEX id file</description>
+  <requirements>
+    <container type="docker">visatm/istex-metadata</container>
+  </requirements>
+  <command><![CDATA[
+    IstexMetadata.pl -i "$input" -t "$docterm"
+  ]]></command>
+  <inputs>
+    <param name="input" type="data" format="txt" label="ISTEX id file" />
+  </inputs>
+  <outputs>
+    <data format="tabular" label="TEEFT “doc × term” from ${on_string}" name="docterm" />
+  </outputs>
+
+  <tests>
+    <test>
+      <param name="input" value="istexCorpus.txt" />
+      <output name="metadata" file="istexTeeft.txt" />
+    </test>
+  </tests>
+
+  <help><![CDATA[
+From a list of ISTEX id in the input file, this tool extracts the *TEEFT* descriptors (~ keywords) from 
+corresponding documents and produce a *“doc × term”* file. 
+
+-----
+
+**Options**
+
+This programme has just one **mandatory** argument
+
++ **ISTEX id filename** 
+
+-----
+
+**Input file**
+
+The input file **must** contain a line with the mention **ISTEX** between square brackets 
+followed by a list of id, one by line preceded by the id type. 
+Whatever information is present above the mention **[ISTEX]** will be ignored. Each id 
+may be followed by a pound sign ('#')  and a filename. 
+
+
+Example:
+
+::
+
+     [ISTEX]
+     ark ark:/67375/0T8-VC3W50FL-B             # test001
+     ark ark:/67375/6H6-ZNZ982C4-N             # test002
+     ark ark:/67375/6H6-4NH81FDN-R             # test003
+     ark ark:/67375/6H6-1FSRLFB6-Q             # test004
+     ark ark:/67375/WNG-RHR3302C-7             # test005
+     ark ark:/67375/WNG-R0P0D6BZ-L             # test006
+
+
+-----
+
+**“Doc × term” file**
+
+The “doc × term” file contains a list of “filename — descriptor” separated by a tab, with one 
+couple per line. If the ISTEX id file does not contain filenames, then the programme will generate 
+a name of the form “f_nnn_” where *nnn* is a sequential number. 
+
+Example:
+
+::
+
+     test002      absolute value
+     test002      behaviour
+     test002      birkhoff theorem
+     test002      boundary conditions
+     test002      cubic interaction
+     test002      curvature
+     test002      different energies
+     test002      disordered regions
+     test002      geometrical structure
+     test002      harmonic behaviour
+     test002      harmonicity threshold
+     test002      high energy
+
+
+
+ ]]></help>
+
+</tool>

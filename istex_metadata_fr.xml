@@ -1,0 +1,117 @@
+<tool id="istex-metadata" name="Génération d’un fichier de métadonnées" version="0.5.1">
+  <description>à partir d’un fichier d’identifiants ISTEX</description>
+  <requirements>
+    <container type="docker">visatm/istex-metadata</container>
+  </requirements>
+  <command><![CDATA[
+    IstexMetadata.pl -i "$input" -m "$metadata" -l "$language"
+    #if $teeft == 'yes'
+    -t "$docterm"
+    #end if
+  ]]></command>
+  <inputs>
+    <param name="input" type="data" format="txt" label="Fichier d’identifiants ISTEX" />
+    <param name="teeft" type="select" display="radio" label="Extraire les descripteurs TEEFT ?">
+      <option value="no" selected="true">Non</option>
+      <option value="yes">Oui</option>
+    </param>
+    <param name="language" type="select" display="radio" label="Langue du fichier de métadonnées">
+      <option value="en" selected="true">anglais</option>
+      <option value="fr">français</option>
+    </param>
+  </inputs>
+  <outputs>
+    <data format="tabular" label="Métadonnées de ${on_string}" name="metadata" />
+    <data format="tabular" label="“doc × terme” TEEFT de ${on_string}" name="docterm">
+      <filter>teeft == 'yes'</filter>
+    </data>
+  </outputs>
+
+  <tests>
+    <test>
+      <param name="input" value="istexCorpus.txt" />
+      <param name="teeft" value="no" />
+      <output name="metadata" file="istexMetadata.txt" />
+    </test>
+  </tests>
+
+  <help><![CDATA[
+À partir de la liste d’identifiants ISTEX id du fichier d’entrée, cet outil va extraire les métadonnées 
+correspondantes et produire un fichier **TSV**. 
+La première ligne du fichier contient une entête avec le nom des différents champs. 
+
+Il est aussi possible d’extraire les descripteurs TEEFT associés aux mêmes documents pour produire un 
+fichier “doc × terme”. 
+
+-----
+
+**Options**
+
+Le programme est appelé avec plusieurs arguments dont un **obligatoire** et les autres *optionnels* 
+(en fait, avec des valeurs par défaut).
+
++ **Nom du fichier d’identifiants ISTEX** 
+
++ *Extraction des descripteurs TEEFT* (**non** par défaut) 
+
++ *Langue du fichier de métadonnées*, utilisée pour la liste des noms de champs et la langue de publication (**anglais** par défaut)
+
+-----
+
+**Fichier d’entrée**
+
+Le fichier d’entrée **doit** contenir une ligne avec la mention **ISTEX** entre crochets, 
+suivie par une liste d’identifiants, un par ligne, précédé du type de l’identifiant. 
+Toute information présente avant l’indication **[ISTEX]** sera ignorée. Chaque identifiant 
+peut être suivi d’un symbole dièse ('#') et d’un nom de fichier. 
+
+Exemple :
+
+::
+
+     [ISTEX]
+     ark ark:/67375/0T8-VC3W50FL-B             # test001
+     ark ark:/67375/6H6-ZNZ982C4-N             # test002
+     ark ark:/67375/6H6-4NH81FDN-R             # test003
+     ark ark:/67375/6H6-1FSRLFB6-Q             # test004
+     ark ark:/67375/WNG-RHR3302C-7             # test005
+     ark ark:/67375/WNG-R0P0D6BZ-L             # test006
+
+
+-----
+
+**Métadonnées**
+
+Le fichier de métadonnées obtenu en sortie est formé de colonnes séparées par des tabulations. 
+La première ligne est réservée à l’entête contenant le nom des différents champs :
+
+ + Nom de fichier
+ + Titre
+ + Auteur
+ + Affiliation
+ + Source
+ + ISSN
+ + e-ISSN
+ + ISBN
+ + e-ISBN
+ + Éditeur
+ + Type de document
+ + Type de contenu
+ + Date
+ + Langue
+ + Résumé
+ + Mots-clés d’auteur
+ + Catégories WoS
+ + Catégories Science-Metrix\t\t
+ + Catégories Scopus
+ + Catégories INIST
+ + Score de qualité
+ + Version du PDF
+ + Identifiant ISTEX
+ + ARK
+ + DOI
+ + PMID
+
+ ]]></help>
+
+</tool>
